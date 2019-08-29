@@ -20,7 +20,7 @@
 #include "config/local.glm"
 #set CONFIGFILE=config/local.glm
 #endif
-#set suppress_repeat_messages=FALSE
+#set suppress_repeat_messages=TRUE
 #ifdef TIMEZONE
 clock {
 	timezone ${TIMEZONE};

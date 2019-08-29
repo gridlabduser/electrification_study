@@ -51,8 +51,15 @@ for i,file_name in enumerate(config_files) :
 			line="#include \"elec_config/" + file_name + "\"" 
 			fm.write(line+"\n"+"#define RUN_NAME="+file_name[12:-4]+"\n")
 
-
-
+del_feeder = glob.glob('output/feeder_power/*')
+for f in del_feeder : 
+	os.remove(f)
+del_line = glob.glob('output/line_losses/*')
+for f in del_line : 
+	os.remove(f)
+del_main = glob.glob('output/main_node_power/*')
+for f in del_main : 
+	os.remove(f)
 
 
 

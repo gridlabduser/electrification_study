@@ -6,12 +6,12 @@ import matplotlib.dates as md
 import matplotlib as matplotlib
 import glmptime as glmptime
 import numpy as np
-
+skip_names=['Total Number of Houses per Phase', 'Run Name', "", 'Start Time', 'Stop Time', "Weather File"]
 filename_perc = []
 with open('config/simulation_configuration.csv', newline='') as config_file : 
 	fc = csv.reader(config_file, delimiter=',', quotechar='|')
 	for line in fc : 
-		if 'Total Number of Houses per Phase' in line[0] or 'Run Name' in line[0] : 
+		if line[0] in skip_names: 
 			continue
 		else : 
 			filename_perc.append([str(line[0]).replace(" ", "_"), float(line[1])])
@@ -22,10 +22,13 @@ max_reac = []
 energy_per_run = []
 plt.figure(1)
 files = [f for f in listdir(path) if isfile(join(path, f)) and f.endswith( ".csv" )]
-for file in files :
+files_sorted=sorted(filename_perc, key=lambda x: x[1])
+for file_tuple in files_sorted :
+	file = 'feeder_'+file_tuple[0]+'.csv'
 	time_stamp = []
 	real_power = []
 	reactive_power = []
+	tmp_label=[]
 	with open(path+file, newline='') as csvfile : 
 		fr = csv.reader(csvfile, delimiter=',', quotechar='|')
 		for row in fr : 
@@ -38,7 +41,10 @@ for file in files :
 		energy_per_run.append([file[:-4],sum(real_power)])
 		max_real.append([file[:-4], max(real_power)])
 		max_reac.append([file[:-4], max(reactive_power)])
-		plt.plot(time_stamp, real_power, label=file[7:-4])
+		for p in filename_perc : 
+			if file[7:-4] in p[0] : 
+				tmp_label=round(float(p[1])*100)
+		plt.plot(time_stamp, real_power, label=str(tmp_label)+'% Electrification')
 		# plt.plot(time_stamp, reactive_power, label='reactive_'+file[:-4])
 plt.gcf().autofmt_xdate()
 myFmt = md.DateFormatter('%y-%m-%d %H:%M:%S')
